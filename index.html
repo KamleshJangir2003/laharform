@@ -68,6 +68,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .hint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 @media(max-width:500px){.two-col{grid-template-columns:1fr;}}
+@media(max-width:500px){.sub-card-right{display:none;}.sub-meta{flex-direction:column;gap:4px;}}
 
 /* CHECKBOX */
 .checkbox-group{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
@@ -115,7 +116,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 
 /* ===== DASHBOARD ===== */
 .dashboard-wrap{max-width:1000px;margin:0 auto;padding:28px 20px 60px;}
-.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:gap;}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
 .dash-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
 .dash-sub{color:var(--muted);font-size:13px;margin-top:2px;}
 .btn-export{background:#ffd700;color:#002366;padding:10px 20px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;border:none;display:flex;align-items:center;gap:6px;}
@@ -171,7 +172,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 .filter-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
 .filter-bar input{flex:1;min-width:180px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;}
 .filter-bar input:focus{border-color:#ffd700;}
-.filter-bar select{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;cursor:pointer;appearance:none;}
+.filter-bar select{background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffd700' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 12px center;border:1.5px solid var(--border);border-radius:10px;padding:10px 36px 10px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;cursor:pointer;appearance:none;}
 </style>
 </head>
 <body>
@@ -486,9 +487,11 @@ function showView(viewId, tabEl) {
   updateBadge();
 }
 
+
 function updateBadge() {
   const count = getSubmissions().length;
-  document.getElementById('subCountBadge').textContent = count;
+  const el = document.getElementById('subCountBadge');
+  if (el) el.textContent = count;
 }
 
 // ===== FORM LOGIC =====
@@ -594,6 +597,12 @@ function submitForm() {
   submissions.unshift(submission);
   saveSubmissions(submissions);
   updateBadge();
+
+  // Google Sheet mein bhejo
+  fetch('https://script.google.com/macros/s/AKfycbzn6SnxcBioMgf36yUBW16a1qEIy2wG04eK2b3rkkkhMwUqMxyYasAZOmRxJ2zkSbVA/exec', {
+    method: 'POST',
+    body: JSON.stringify(submission)
+  }).catch(err => console.log('Sheet error:', err));
 
   // Show success
   document.getElementById('section-' + currentStep).classList.remove('active');
