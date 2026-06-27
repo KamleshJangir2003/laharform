@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Client Marketing Form</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+:root {
+  --bg:#0c0c0f;--surface:#14141a;--card:#1a1a24;--border:#2a2a3a;
+  --accent:#7c5cfc;--accent-soft:rgba(124,92,252,0.12);--accent2:#e8c84a;
+  --text:#f0eeff;--muted:#7a7a9a;--success:#3ecf8e;--danger:#ff5470;--radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+
+/* NAV */
+.top-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:-0.02em;}
+.nav-logo span{color:var(--accent2);}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.2s;}
+.nav-tab.active{background:var(--accent);color:#fff;}
+.nav-tab:hover:not(.active){background:var(--card);color:var(--text);}
+.sub-count{background:var(--accent2);color:#1a1000;font-size:10px;font-weight:800;padding:2px 7px;border-radius:100px;margin-left:6px;}
+
+/* VIEWS */
+.view{display:none;}.view.active{display:block;}
+
+/* FORM VIEW */
+.header{background:linear-gradient(135deg,#0f0a2a 0%,#1a1040 60%,#0c0c0f 100%);border-bottom:1px solid var(--border);padding:40px 24px 32px;text-align:center;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(ellipse,rgba(124,92,252,0.3),transparent 70%);pointer-events:none;}
+.badge{display:inline-block;background:var(--accent-soft);border:1px solid rgba(124,92,252,0.4);color:#a98bff;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:16px;}
+.header h1{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,38px);font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:10px;}
+.header h1 span{color:var(--accent2);}
+.header p{color:var(--muted);font-size:14px;max-width:440px;margin:0 auto;line-height:1.6;}
+
+/* PROGRESS */
+.progress-wrap{max-width:680px;margin:0 auto;padding:24px 24px 0;}
+.progress-steps{display:flex;align-items:center;margin-bottom:6px;}
+.step-dot{width:30px;height:30px;border-radius:50%;background:var(--card);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);transition:all 0.3s;flex-shrink:0;}
+.step-dot.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 4px rgba(124,92,252,0.2);}
+.step-dot.done{background:var(--success);border-color:var(--success);color:#fff;}
+.step-line{flex:1;height:2px;background:var(--border);transition:background 0.3s;}
+.step-line.done{background:var(--success);}
+.step-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:0.05em;text-transform:uppercase;}
+
+/* FORM CARD */
+.form-wrap{max-width:680px;margin:24px auto 60px;padding:0 16px;}
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:16px;display:none;animation:fadeIn 0.3s ease;}
+.section-card.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+.section-icon{width:42px;height:42px;background:var(--accent-soft);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.section-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;}
+.section-subtitle{font-size:12px;color:var(--muted);margin-top:2px;}
+
+/* FIELDS */
+.field{margin-bottom:20px;}
+.field label{display:block;font-size:13px;font-weight:600;color:#c8c0f0;margin-bottom:7px;}
+.req{color:var(--accent2);}
+.field input,.field textarea,.field select{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 15px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;transition:border-color 0.2s,box-shadow 0.2s;outline:none;appearance:none;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,252,0.15);}
+.field textarea{resize:vertical;min-height:90px;line-height:1.6;}
+.field select{cursor:pointer;}
+.field select option{background:#1a1a24;}
+.hint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:500px){.two-col{grid-template-columns:1fr;}}
+
+/* CHECKBOX */
+.checkbox-group{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
+.check-item{display:flex;align-items:center;gap:9px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;cursor:pointer;transition:all 0.2s;user-select:none;}
+.check-item:hover{border-color:#3a3a5a;}
+.check-item.checked{border-color:var(--accent);background:var(--accent-soft);}
+.check-box{width:17px;height:17px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;font-size:10px;}
+.check-item.checked .check-box{background:var(--accent);border-color:var(--accent);color:#fff;}
+.check-label{font-size:13px;font-weight:500;}
+
+/* RADIO */
+.radio-group{display:flex;flex-direction:column;gap:8px;}
+.radio-item{display:flex;align-items:flex-start;gap:11px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:13px 15px;cursor:pointer;transition:all 0.2s;user-select:none;}
+.radio-item:hover{border-color:#3a3a5a;}
+.radio-item.selected{border-color:var(--accent);background:var(--accent-soft);}
+.radio-dot{width:17px;height:17px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;transition:all 0.2s;position:relative;}
+.radio-item.selected .radio-dot{border-color:var(--accent);}
+.radio-dot::after{content:'';width:7px;height:7px;border-radius:50%;background:var(--accent);opacity:0;transition:opacity 0.2s;position:absolute;}
+.radio-item.selected .radio-dot::after{opacity:1;}
+.radio-label{font-size:13px;font-weight:600;}
+.radio-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* RANGE */
+.range-wrap{display:flex;align-items:center;gap:12px;}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:var(--border);border-radius:100px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 4px rgba(124,92,252,0.2);}
+.range-val{background:var(--accent);color:#fff;font-size:13px;font-weight:700;padding:4px 12px;border-radius:100px;min-width:90px;text-align:center;}
+
+/* NAV BUTTONS */
+.nav-buttons{display:flex;justify-content:space-between;align-items:center;margin-top:28px;gap:10px;}
+.btn{padding:13px 26px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:#3a3a5a;color:var(--text);}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 18px rgba(124,92,252,0.4);}
+.btn-primary:hover{background:#8f70ff;transform:translateY(-1px);}
+.btn-success{background:var(--success);color:#0c2a1e;box-shadow:0 4px 18px rgba(62,207,142,0.3);}
+.btn-success:hover{filter:brightness(1.08);transform:translateY(-1px);}
+
+/* SUCCESS SCREEN */
+.success-screen{text-align:center;padding:48px 24px;}
+.success-icon-big{width:72px;height:72px;background:rgba(62,207,142,0.12);border:2px solid rgba(62,207,142,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 24px;}
+.success-screen h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:8px;}
+.success-screen p{color:var(--muted);font-size:14px;line-height:1.6;max-width:360px;margin:0 auto 28px;}
+.btn-new-form{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:14px 28px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;border:none;margin-top:8px;}
+
+/* ===== DASHBOARD ===== */
+.dashboard-wrap{max-width:1000px;margin:0 auto;padding:28px 20px 60px;}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:gap;}
+.dash-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+.dash-sub{color:var(--muted);font-size:13px;margin-top:2px;}
+.btn-export{background:var(--success);color:#0c2a1e;padding:10px 20px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;border:none;display:flex;align-items:center;gap:6px;}
+.btn-export:hover{filter:brightness(1.08);}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.stat-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1;}
+.stat-label{font-size:12px;color:var(--muted);margin-top:4px;font-weight:500;}
+.stat-card.accent .stat-num{color:var(--accent);}
+.stat-card.gold .stat-num{color:var(--accent2);}
+.stat-card.green .stat-num{color:var(--success);}
+
+/* SUBMISSION LIST */
+.empty-state{text-align:center;padding:60px 24px;color:var(--muted);}
+.empty-state .e-icon{font-size:48px;margin-bottom:16px;}
+.empty-state h3{font-family:'Syne',sans-serif;font-size:18px;color:var(--text);margin-bottom:8px;}
+
+.submissions-grid{display:flex;flex-direction:column;gap:14px;}
+.sub-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color 0.2s;}
+.sub-card:hover{border-color:#3a3a5a;}
+.sub-card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;gap:12px;}
+.sub-card-left{display:flex;align-items:center;gap:14px;}
+.sub-avatar{width:42px;height:42px;border-radius:10px;background:var(--accent-soft);border:1px solid rgba(124,92,252,0.3);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#a98bff;flex-shrink:0;}
+.sub-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;}
+.sub-meta{font-size:12px;color:var(--muted);margin-top:2px;display:flex;gap:10px;flex-wrap:wrap;}
+.sub-meta span{display:flex;align-items:center;gap:4px;}
+.sub-card-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.tag-pill{background:var(--accent-soft);border:1px solid rgba(124,92,252,0.25);color:#a98bff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;}
+.tag-pill.gold{background:rgba(232,200,74,0.1);border-color:rgba(232,200,74,0.25);color:var(--accent2);}
+.expand-icon{color:var(--muted);font-size:14px;transition:transform 0.2s;}
+.sub-card.expanded .expand-icon{transform:rotate(180deg);}
+
+.sub-card-body{display:none;border-top:1px solid var(--border);padding:20px;}
+.sub-card.expanded .sub-card-body{display:block;}
+
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:16px;}
+.detail-item{background:var(--surface);border-radius:8px;padding:12px 14px;}
+.detail-key{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:4px;}
+.detail-val{font-size:13px;font-weight:500;line-height:1.5;}
+
+.sub-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.btn-sm{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:5px;}
+.btn-sm-primary{background:var(--accent);color:#fff;}
+.btn-sm-primary:hover{background:#8f70ff;}
+.btn-sm-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted);}
+.btn-sm-ghost:hover{border-color:#3a3a5a;color:var(--text);}
+.btn-sm-danger{background:rgba(255,84,112,0.1);border:1.5px solid rgba(255,84,112,0.25);color:var(--danger);}
+.btn-sm-danger:hover{background:rgba(255,84,112,0.2);}
+
+/* SEARCH / FILTER */
+.filter-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.filter-bar input{flex:1;min-width:180px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;}
+.filter-bar input:focus{border-color:var(--accent);}
+.filter-bar select{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;cursor:pointer;appearance:none;}
+</style>
+</head>
+<body>
+
+<!-- <nav class="top-nav">
+  <div class="nav-logo">Marketing<span>Brief</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showView('formView',this)">📋 New Form</button>
+    <button class="nav-tab" onclick="showView('dashView',this)" id="dashTab">📊 Submissions <span class="sub-count" id="subCountBadge">0</span></button>
+  </div>
+</nav> -->
+
+<!-- ========== FORM VIEW ========== -->
+<div class="view active" id="formView">
+  <div class="header">
+    <div class="badge">Client Onboarding</div>
+    <h1>Lahar Marketing <span>Requirements</span> Form</h1>
+    <!-- <p>Client ka complete marketing brief collect karo — ek jagah, ek baar.</p> -->
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-steps" id="progressSteps">
+      <div class="step-dot active" id="dot-0">1</div>
+      <div class="step-line" id="line-0"></div>
+      <div class="step-dot" id="dot-1">2</div>
+      <div class="step-line" id="line-1"></div>
+      <div class="step-dot" id="dot-2">3</div>
+      <div class="step-line" id="line-2"></div>
+      <div class="step-dot" id="dot-3">4</div>
+      <div class="step-line" id="line-3"></div>
+      <div class="step-dot" id="dot-4">5</div>
+    </div>
+    <div class="step-labels">
+      <span>Business</span><span>Audience</span><span>Platforms</span><span>Content</span><span>Budget</span>
+    </div>
+  </div>
+
+  <div class="form-wrap">
+
+    <!-- S1: Business -->
+    <div class="section-card active" id="section-0">
+      <div class="section-header">
+        <div class="section-icon">🏢</div>
+        <div><div class="section-title">Business Information</div><div class="section-subtitle">Client aur unke business ke baare mein basic details</div></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Client Name <span class="req">*</span></label><input type="text" id="f_clientname" placeholder="Client's name"/></div>
+        <div class="field"><label>Business Name <span class="req">*</span></label><input type="text" id="f_name" placeholder="e.g. Hair House Studio"/></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Phone / WhatsApp</label><input type="tel" id="f_phone" placeholder="+91 98765 43210"/></div>
+        <div class="field"><label>Email</label><input type="email" id="f_email" placeholder="client@email.com"/></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Industry / Niche <span class="req">*</span></label>
+          <select id="f_industry">
+            <option value="">Select industry...</option>
+            <option>Beauty & Salon</option><option>Fashion & Clothing</option><option>Food & Restaurant</option>
+            <option>Real Estate</option><option>Education & Coaching</option><option>Health & Fitness</option>
+            <option>E-commerce / Retail</option><option>Tech & Software</option><option>Travel & Hospitality</option>
+            <option>Finance & Investment</option><option>Entertainment & Media</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Business Stage</label>
+          <select id="f_stage">
+            <option value="">Select stage...</option>
+            <option>New Launch (0–6 months)</option><option>Growing (6 months – 2 years)</option>
+            <option>Established (2+ years)</option><option>Rebranding / Relaunch</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Business Description</label><textarea id="f_desc" placeholder="Products/services, USP, what makes them unique..."></textarea></div>
+      <div class="two-col">
+        <div class="field"><label>City / Location</label><input type="text" id="f_location" placeholder="e.g. Jaipur, Rajasthan"/></div>
+        <div class="field"><label>Current Online Presence</label><input type="text" id="f_online" placeholder="Website, Instagram handle..."/></div>
+      </div>
+      <div class="field"><label>Competitors (if known)</label><input type="text" id="f_competitors" placeholder="e.g. ABC Salon, XYZ Studio..."/></div>
+      <div class="nav-buttons"><div></div><button class="btn btn-primary" onclick="nextStep()">Next: Target Audience →</button></div>
+    </div>
+
+    <!-- S2: Audience -->
+    <div class="section-card" id="section-1">
+      <div class="section-header">
+        <div class="section-icon">🎯</div>
+        <div><div class="section-title">Target Audience</div><div class="section-subtitle">Unka ideal customer kaun hai?</div></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Primary Age Group</label>
+          <select id="f_age"><option value="">Select...</option><option>13–18 (Teens)</option><option>18–24 (Young Adults)</option><option>25–35 (Millennials)</option><option>35–50 (Gen X)</option><option>50+</option><option>All ages</option></select>
+        </div>
+        <div class="field"><label>Gender Focus</label>
+          <select id="f_gender"><option value="">Select...</option><option>Mostly Female</option><option>Mostly Male</option><option>Both Equal</option><option>All</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Customer Income Level</label>
+        <div class="radio-group" id="rg_income">
+          <div class="radio-item" onclick="selectRadio(this,'rg_income','f_income','Budget / Economy')"><div class="radio-dot"></div><div><div class="radio-label">Budget / Economy</div><div class="radio-desc">Price-sensitive, value for money</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_income','f_income','Mid-range')"><div class="radio-dot"></div><div><div class="radio-label">Mid-range</div><div class="radio-desc">Quality + affordability balance</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_income','f_income','Premium / Luxury')"><div class="radio-dot"></div><div><div class="radio-label">Premium / Luxury</div><div class="radio-desc">High-end, quality over price</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_income','f_income','Mixed')"><div class="radio-dot"></div><div><div class="radio-label">Mixed / All segments</div><div class="radio-desc">Multiple income groups</div></div></div>
+        </div>
+        <input type="hidden" id="f_income"/>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Customer Location</label>
+          <select id="f_custloc"><option value="">Select...</option><option>Local (single city)</option><option>Regional (state-level)</option><option>Pan India</option><option>International</option><option>Online only</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Customer Pain Points</label><textarea id="f_painpoints" placeholder="What problems do their customers face that this business solves?"></textarea></div>
+      <div class="nav-buttons"><button class="btn btn-ghost" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next: Platforms →</button></div>
+    </div>
+
+    <!-- S3: Platforms -->
+    <div class="section-card" id="section-2">
+      <div class="section-header">
+        <div class="section-icon">📱</div>
+        <div><div class="section-title">Platforms & Goals</div><div class="section-subtitle">Kahan aur kisliye marketing karni hai?</div></div>
+      </div>
+      <div class="field"><label>Platforms Required <span class="req">*</span></label>
+        <div class="checkbox-group" id="cg_platforms">
+          <div class="check-item" onclick="toggleCheck(this,'Instagram')"><div class="check-box">✓</div><span class="check-label">📸 Instagram</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Facebook')"><div class="check-box">✓</div><span class="check-label">📘 Facebook</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'YouTube')"><div class="check-box">✓</div><span class="check-label">▶️ YouTube</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'WhatsApp')"><div class="check-box">✓</div><span class="check-label">💬 WhatsApp</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Google Ads')"><div class="check-box">✓</div><span class="check-label">🔍 Google Ads</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'LinkedIn')"><div class="check-box">✓</div><span class="check-label">💼 LinkedIn</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Twitter/X')"><div class="check-box">✓</div><span class="check-label">🐦 Twitter/X</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Website/SEO')"><div class="check-box">✓</div><span class="check-label">🌐 Website/SEO</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Email Marketing')"><div class="check-box">✓</div><span class="check-label">📧 Email</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Influencer')"><div class="check-box">✓</div><span class="check-label">🌟 Influencer</span></div>
+        </div>
+      </div>
+      <div class="field"><label>Marketing Goals</label>
+        <div class="checkbox-group" id="cg_goals">
+          <div class="check-item" onclick="toggleCheck(this,'Brand Awareness')"><div class="check-box">✓</div><span class="check-label">📣 Brand Awareness</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Lead Generation')"><div class="check-box">✓</div><span class="check-label">🎯 Lead Generation</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Sales / Revenue')"><div class="check-box">✓</div><span class="check-label">💰 Sales</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Followers Growth')"><div class="check-box">✓</div><span class="check-label">📈 Followers</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Customer Retention')"><div class="check-box">✓</div><span class="check-label">🔁 Retention</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Website Traffic')"><div class="check-box">✓</div><span class="check-label">🌐 Traffic</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Event Promotion')"><div class="check-box">✓</div><span class="check-label">🎉 Events</span></div>
+        </div>
+      </div>
+      <div class="field"><label>Upcoming Campaign / Launch</label><input type="text" id="f_campaign" placeholder="e.g. Diwali Sale, New Product Launch..."/></div>
+      <div class="nav-buttons"><button class="btn btn-ghost" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next: Content →</button></div>
+    </div>
+
+    <!-- S4: Content -->
+    <div class="section-card" id="section-3">
+      <div class="section-header">
+        <div class="section-icon">🎨</div>
+        <div><div class="section-title">Content & Branding</div><div class="section-subtitle">Content type, tone aur visual preferences</div></div>
+      </div>
+      <div class="field"><label>Content Types Needed</label>
+        <div class="checkbox-group" id="cg_content">
+          <div class="check-item" onclick="toggleCheck(this,'Reels/Videos')"><div class="check-box">✓</div><span class="check-label">🎬 Reels/Videos</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Static Posts')"><div class="check-box">✓</div><span class="check-label">🖼 Static Posts</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Carousels')"><div class="check-box">✓</div><span class="check-label">📑 Carousels</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Stories')"><div class="check-box">✓</div><span class="check-label">⭕ Stories</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Blog/Articles')"><div class="check-box">✓</div><span class="check-label">📝 Blog</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Ad Creatives')"><div class="check-box">✓</div><span class="check-label">💡 Ad Creatives</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Testimonials/UGC')"><div class="check-box">✓</div><span class="check-label">⭐ Testimonials</span></div>
+        </div>
+      </div>
+      <div class="field"><label>Brand Tone / Voice</label>
+        <div class="radio-group" id="rg_tone">
+          <div class="radio-item" onclick="selectRadio(this,'rg_tone','f_tone','Professional & Corporate')"><div class="radio-dot"></div><div><div class="radio-label">Professional & Corporate</div><div class="radio-desc">Formal, polished</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_tone','f_tone','Friendly & Conversational')"><div class="radio-dot"></div><div><div class="radio-label">Friendly & Conversational</div><div class="radio-desc">Relatable, casual</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_tone','f_tone','Trendy & Youthful')"><div class="radio-dot"></div><div><div class="radio-label">Trendy & Youthful</div><div class="radio-desc">Gen Z energy, viral style</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_tone','f_tone','Luxury & Premium')"><div class="radio-dot"></div><div><div class="radio-label">Luxury & Premium</div><div class="radio-desc">Sophisticated, aspirational</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_tone','f_tone','Educational & Informative')"><div class="radio-dot"></div><div><div class="radio-label">Educational & Informative</div><div class="radio-desc">Value-first, teach & inform</div></div></div>
+        </div>
+        <input type="hidden" id="f_tone"/>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Language</label>
+          <select id="f_lang"><option value="">Select...</option><option>Hindi</option><option>English</option><option>Hinglish</option><option>Regional</option><option>Multilingual</option></select>
+        </div>
+        <div class="field"><label>Posting Frequency</label>
+          <select id="f_freq"><option value="">Select...</option><option>1–2/week</option><option>3–4/week</option><option>Daily</option><option>Multiple/day</option><option>TBD</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Existing Brand Assets</label>
+        <div class="checkbox-group" id="cg_assets">
+          <div class="check-item" onclick="toggleCheck(this,'Logo')"><div class="check-box">✓</div><span class="check-label">🏷 Logo</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Brand Colors')"><div class="check-box">✓</div><span class="check-label">🎨 Colors</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Brand Font')"><div class="check-box">✓</div><span class="check-label">🔤 Font</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Photos/Videos')"><div class="check-box">✓</div><span class="check-label">📷 Media</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'None - From scratch')"><div class="check-box">✓</div><span class="check-label">❌ None</span></div>
+        </div>
+      </div>
+      <div class="field"><label>Reference Accounts / Inspiration</label><input type="text" id="f_reference" placeholder="Instagram handles or brands they admire..."/></div>
+      <div class="nav-buttons"><button class="btn btn-ghost" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next: Budget →</button></div>
+    </div>
+
+    <!-- S5: Budget -->
+    <div class="section-card" id="section-4">
+      <div class="section-header">
+        <div class="section-icon">💰</div>
+        <div><div class="section-title">Budget & Timeline</div><div class="section-subtitle">Investment aur expectations clearly define karo</div></div>
+      </div>
+      <div class="field"><label>Monthly Marketing Budget</label>
+        <div class="radio-group" id="rg_budget">
+          <div class="radio-item" onclick="selectRadio(this,'rg_budget','f_budget','Under ₹10,000/month')"><div class="radio-dot"></div><div><div class="radio-label">Under ₹10,000/month</div><div class="radio-desc">Starter / small scale</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_budget','f_budget','₹10,000 – ₹30,000/month')"><div class="radio-dot"></div><div><div class="radio-label">₹10,000 – ₹30,000/month</div><div class="radio-desc">Growing stage</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_budget','f_budget','₹30,000 – ₹1,00,000/month')"><div class="radio-dot"></div><div><div class="radio-label">₹30,000 – ₹1,00,000/month</div><div class="radio-desc">Mid-size, serious</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_budget','f_budget','₹1,00,000+/month')"><div class="radio-dot"></div><div><div class="radio-label">₹1,00,000+/month</div><div class="radio-desc">Aggressive growth</div></div></div>
+          <div class="radio-item" onclick="selectRadio(this,'rg_budget','f_budget','Flexible / TBD')"><div class="radio-dot"></div><div><div class="radio-label">Flexible / TBD</div><div class="radio-desc">Based on proposal</div></div></div>
+        </div>
+        <input type="hidden" id="f_budget"/>
+      </div>
+      <div class="field">
+        <label>Paid Ads Budget (Monthly)</label>
+        <div class="range-wrap">
+          <input type="range" id="f_ads_range" min="0" max="100000" step="5000" value="10000" oninput="document.getElementById('ads_val').textContent='₹'+Number(this.value).toLocaleString('en-IN')"/>
+          <div class="range-val" id="ads_val">₹10,000</div>
+        </div>
+      </div>
+      <div class="field"><label>Expected KPIs</label>
+        <div class="checkbox-group" id="cg_kpi">
+          <div class="check-item" onclick="toggleCheck(this,'Follower Growth')"><div class="check-box">✓</div><span class="check-label">📈 Followers</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Reach & Impressions')"><div class="check-box">✓</div><span class="check-label">👁 Reach</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Leads/Enquiries')"><div class="check-box">✓</div><span class="check-label">📩 Leads</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Sales Conversion')"><div class="check-box">✓</div><span class="check-label">💸 Sales</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Engagement Rate')"><div class="check-box">✓</div><span class="check-label">❤️ Engagement</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'Brand Recognition')"><div class="check-box">✓</div><span class="check-label">🌟 Branding</span></div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Start Date</label><input type="date" id="f_start"/></div>
+        <div class="field"><label>Contract Duration</label>
+          <select id="f_duration"><option value="">Select...</option><option>1 Month (Trial)</option><option>3 Months</option><option>6 Months</option><option>12 Months</option><option>Ongoing</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Special Notes / Requirements</label><textarea id="f_notes" placeholder="Koi khaas requirements, dos & don'ts, additional info..."></textarea></div>
+      <div class="field"><label>How did they find you?</label>
+        <select id="f_referral"><option value="">Select...</option><option>Instagram</option><option>Facebook</option><option>WhatsApp</option><option>Referral</option><option>Google Search</option><option>LinkedIn</option><option>Walk-in</option><option>Other</option></select>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
+        <button class="btn btn-success" onclick="submitForm()">✅ Submit & Save Brief</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="section-card" id="section-success">
+      <div class="success-screen">
+        <div class="success-icon-big">🎉</div>
+        <h2>Brief Saved!</h2>
+        <p>Client ka marketing brief successfully save ho gaya. Dashboard mein dekh sakte ho sab submissions.</p>
+        <button class="btn btn-primary" onclick="showView('dashView', document.querySelectorAll('.nav-tab')[1])" style="margin-bottom:12px;width:100%">📊 View Dashboard →</button>
+        <button class="btn btn-ghost" style="width:100%" onclick="resetForm()">📋 Fill Another Form</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== DASHBOARD VIEW ========== -->
+<div class="view" id="dashView">
+  <div class="dashboard-wrap">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">Submissions Dashboard</div>
+        <div class="dash-sub">Saare saved client briefs ek jagah</div>
+      </div>
+      <button class="btn-export" onclick="exportAllCSV()">⬇ Export CSV</button>
+    </div>
+
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card accent"><div class="stat-num" id="st_total">0</div><div class="stat-label">Total Submissions</div></div>
+      <div class="stat-card gold"><div class="stat-num" id="st_thisweek">0</div><div class="stat-label">This Week</div></div>
+      <div class="stat-card green"><div class="stat-num" id="st_topind">—</div><div class="stat-label">Top Industry</div></div>
+      <div class="stat-card"><div class="stat-num" id="st_topplat">—</div><div class="stat-label">Top Platform</div></div>
+    </div>
+
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="🔍 Search by name, business, industry..." oninput="renderDashboard()"/>
+      <select id="filterIndustry" onchange="renderDashboard()">
+        <option value="">All Industries</option>
+        <option>Beauty & Salon</option><option>Fashion & Clothing</option><option>Food & Restaurant</option>
+        <option>Real Estate</option><option>Education & Coaching</option><option>Health & Fitness</option>
+        <option>E-commerce / Retail</option><option>Tech & Software</option><option>Travel & Hospitality</option>
+        <option>Finance & Investment</option><option>Entertainment & Media</option><option>Other</option>
+      </select>
+    </div>
+
+    <div id="submissionsList"></div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let currentStep = 0;
+const STORAGE_KEY = 'mktg_submissions_v2';
+const checkedValues = {};
+
+function getSubmissions() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveSubmissions(arr) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+
+// ===== VIEW TOGGLE =====
+function showView(viewId, tabEl) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(viewId).classList.add('active');
+  if (tabEl) tabEl.classList.add('active');
+  if (viewId === 'dashView') renderDashboard();
+  updateBadge();
+}
+
+function updateBadge() {
+  const count = getSubmissions().length;
+  document.getElementById('subCountBadge').textContent = count;
+}
+
+// ===== FORM LOGIC =====
+function updateProgress() {
+  for (let i = 0; i < 5; i++) {
+    const dot = document.getElementById('dot-' + i);
+    if (!dot) continue;
+    dot.classList.remove('active','done');
+    if (i < currentStep) dot.classList.add('done');
+    else if (i === currentStep) dot.classList.add('active');
+  }
+  for (let i = 0; i < 4; i++) {
+    const line = document.getElementById('line-' + i);
+    if (line) line.classList.toggle('done', i < currentStep);
+  }
+}
+
+function nextStep() {
+  const sec = document.getElementById('section-' + currentStep);
+  if (sec) sec.classList.remove('active');
+  currentStep++;
+  const next = document.getElementById('section-' + currentStep);
+  if (next) next.classList.add('active');
+  updateProgress();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    document.getElementById('section-' + currentStep).classList.remove('active');
+    currentStep--;
+    document.getElementById('section-' + currentStep).classList.add('active');
+    updateProgress();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+}
+
+function toggleCheck(el, value) {
+  el.classList.toggle('checked');
+  const groupId = el.closest('.checkbox-group').id;
+  if (!checkedValues[groupId]) checkedValues[groupId] = new Set();
+  if (el.classList.contains('checked')) checkedValues[groupId].add(value);
+  else checkedValues[groupId].delete(value);
+}
+
+function getChecked(groupId) {
+  if (!checkedValues[groupId]) return '';
+  return [...checkedValues[groupId]].join(', ') || '';
+}
+
+function selectRadio(el, groupId, hiddenId, value) {
+  document.querySelectorAll('#' + groupId + ' .radio-item').forEach(r => r.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById(hiddenId).value = value;
+}
+
+function g(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function submitForm() {
+  const name = g('f_name');
+  if (!name) { alert('Business name zaroori hai!'); return; }
+
+  const submission = {
+    id: Date.now().toString(),
+    submittedAt: new Date().toISOString(),
+    clientName: g('f_clientname'),
+    businessName: name,
+    phone: g('f_phone'),
+    email: g('f_email'),
+    industry: g('f_industry'),
+    stage: g('f_stage'),
+    description: g('f_desc'),
+    location: g('f_location'),
+    onlinePresence: g('f_online'),
+    competitors: g('f_competitors'),
+    ageGroup: g('f_age'),
+    gender: g('f_gender'),
+    incomeLevel: g('f_income'),
+    customerLocation: g('f_custloc'),
+    painPoints: g('f_painpoints'),
+    platforms: getChecked('cg_platforms'),
+    goals: getChecked('cg_goals'),
+    campaign: g('f_campaign'),
+    contentTypes: getChecked('cg_content'),
+    brandTone: g('f_tone'),
+    language: g('f_lang'),
+    frequency: g('f_freq'),
+    existingAssets: getChecked('cg_assets'),
+    references: g('f_reference'),
+    budget: g('f_budget'),
+    adsBudget: '₹' + Number(document.getElementById('f_ads_range').value).toLocaleString('en-IN') + '/month',
+    kpis: getChecked('cg_kpi'),
+    startDate: g('f_start'),
+    duration: g('f_duration'),
+    notes: g('f_notes'),
+    referral: g('f_referral'),
+  };
+
+  const submissions = getSubmissions();
+  submissions.unshift(submission);
+  saveSubmissions(submissions);
+  updateBadge();
+
+  // Show success
+  document.getElementById('section-' + currentStep).classList.remove('active');
+  document.getElementById('section-success').classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function resetForm() {
+  // Reset all fields
+  document.querySelectorAll('#formView input, #formView textarea, #formView select').forEach(el => {
+    if (el.type === 'range') el.value = 10000;
+    else el.value = '';
+  });
+  document.querySelectorAll('.check-item').forEach(el => el.classList.remove('checked'));
+  document.querySelectorAll('.radio-item').forEach(el => el.classList.remove('selected'));
+  for (const key in checkedValues) delete checkedValues[key];
+  document.getElementById('ads_val').textContent = '₹10,000';
+
+  document.getElementById('section-success').classList.remove('active');
+  currentStep = 0;
+  document.getElementById('section-0').classList.add('active');
+  updateProgress();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ===== DASHBOARD =====
+function renderDashboard() {
+  let submissions = getSubmissions();
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const indFilter = document.getElementById('filterIndustry').value;
+
+  if (search) {
+    submissions = submissions.filter(s =>
+      (s.clientName||'').toLowerCase().includes(search) ||
+      (s.businessName||'').toLowerCase().includes(search) ||
+      (s.industry||'').toLowerCase().includes(search) ||
+      (s.location||'').toLowerCase().includes(search)
+    );
+  }
+  if (indFilter) submissions = submissions.filter(s => s.industry === indFilter);
+
+  // Stats
+  const all = getSubmissions();
+  document.getElementById('st_total').textContent = all.length;
+  const weekAgo = Date.now() - 7*24*60*60*1000;
+  document.getElementById('st_thisweek').textContent = all.filter(s => new Date(s.submittedAt).getTime() > weekAgo).length;
+
+  const indCounts = {};
+  all.forEach(s => { if (s.industry) indCounts[s.industry] = (indCounts[s.industry]||0) + 1; });
+  const topInd = Object.entries(indCounts).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('st_topind').textContent = topInd ? topInd[0].split(' ')[0] : '—';
+
+  const platCounts = {};
+  all.forEach(s => { (s.platforms||'').split(', ').forEach(p => { if(p) platCounts[p]=(platCounts[p]||0)+1; }); });
+  const topPlat = Object.entries(platCounts).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('st_topplat').textContent = topPlat ? topPlat[0] : '—';
+
+  const list = document.getElementById('submissionsList');
+
+  if (submissions.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="e-icon">📭</div><h3>${all.length === 0 ? 'No submissions yet' : 'No results found'}</h3><p>${all.length === 0 ? 'Fill a new client form to see it here.' : 'Try changing your search or filter.'}</p></div>`;
+    return;
+  }
+
+  list.innerHTML = `<div class="submissions-grid">${submissions.map(s => renderCard(s)).join('')}</div>`;
+}
+
+function renderCard(s) {
+  const date = new Date(s.submittedAt);
+  const dateStr = date.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'});
+  const timeStr = date.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
+  const initials = (s.businessName || '?').substring(0,2).toUpperCase();
+  const budgetShort = s.budget ? s.budget.split('/')[0].replace('₹','₹') : '—';
+
+  return `
+  <div class="sub-card" id="card-${s.id}">
+    <div class="sub-card-header" onclick="toggleCard('${s.id}')">
+      <div class="sub-card-left">
+        <div class="sub-avatar">${initials}</div>
+        <div>
+          <div class="sub-name">${s.businessName || 'Unknown Business'}</div>
+          <div class="sub-meta">
+            <span>👤 ${s.clientName || '—'}</span>
+            <span>🏭 ${s.industry || '—'}</span>
+            <span>📍 ${s.location || '—'}</span>
+            <span>🕐 ${dateStr}, ${timeStr}</span>
+          </div>
+        </div>
+      </div>
+      <div class="sub-card-right">
+        ${s.industry ? `<div class="tag-pill">${s.industry}</div>` : ''}
+        ${s.budget ? `<div class="tag-pill gold">${budgetShort}</div>` : ''}
+        <span class="expand-icon">▼</span>
+      </div>
+    </div>
+    <div class="sub-card-body">
+      <div class="detail-grid">
+        ${detailItem('📞 Phone', s.phone)}
+        ${detailItem('📧 Email', s.email)}
+        ${detailItem('🏭 Industry', s.industry)}
+        ${detailItem('📍 Location', s.location)}
+        ${detailItem('🎯 Age Group', s.ageGroup)}
+        ${detailItem('👥 Gender', s.gender)}
+        ${detailItem('💎 Income Level', s.incomeLevel)}
+        ${detailItem('🌍 Cust. Location', s.customerLocation)}
+        ${detailItem('📱 Platforms', s.platforms)}
+        ${detailItem('🎯 Goals', s.goals)}
+        ${detailItem('🎬 Content Types', s.contentTypes)}
+        ${detailItem('🗣 Brand Tone', s.brandTone)}
+        ${detailItem('🌐 Language', s.language)}
+        ${detailItem('📅 Frequency', s.frequency)}
+        ${detailItem('💰 Budget', s.budget)}
+        ${detailItem('📢 Ads Budget', s.adsBudget)}
+        ${detailItem('📈 KPIs', s.kpis)}
+        ${detailItem('🗓 Start Date', s.startDate)}
+        ${detailItem('⏱ Duration', s.duration)}
+        ${detailItem('📣 Campaign', s.campaign)}
+        ${detailItem('🔗 Online', s.onlinePresence)}
+        ${detailItem('⚔️ Competitors', s.competitors)}
+        ${detailItem('🎨 Assets', s.existingAssets)}
+        ${detailItem('💡 References', s.references)}
+        ${detailItem('📣 Found via', s.referral)}
+      </div>
+      ${s.description ? `<div class="detail-item"><div class="detail-key">📝 Business Description</div><div class="detail-val">${s.description}</div></div>` : ''}
+      ${s.painPoints ? `<div class="detail-item" style="margin-top:8px"><div class="detail-key">⚠️ Pain Points</div><div class="detail-val">${s.painPoints}</div></div>` : ''}
+      ${s.notes ? `<div class="detail-item" style="margin-top:8px"><div class="detail-key">📌 Special Notes</div><div class="detail-val">${s.notes}</div></div>` : ''}
+      <div class="sub-actions">
+        <button class="btn-sm btn-sm-primary" onclick="downloadSingle('${s.id}')">⬇ Download Brief</button>
+        <button class="btn-sm btn-sm-danger" onclick="deleteSubmission('${s.id}')">🗑 Delete</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function detailItem(key, val) {
+  if (!val) return '';
+  return `<div class="detail-item"><div class="detail-key">${key}</div><div class="detail-val">${val}</div></div>`;
+}
+
+function toggleCard(id) {
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.toggle('expanded');
+}
+
+function deleteSubmission(id) {
+  if (!confirm('Is submission ko delete karna chahte ho?')) return;
+  const subs = getSubmissions().filter(s => s.id !== id);
+  saveSubmissions(subs);
+  updateBadge();
+  renderDashboard();
+}
+
+function downloadSingle(id) {
+  const s = getSubmissions().find(sub => sub.id === id);
+  if (!s) return;
+  const date = new Date(s.submittedAt).toLocaleDateString('en-IN');
+  let text = `CLIENT MARKETING BRIEF\n${s.businessName}\nSubmitted: ${date}\n${'='.repeat(50)}\n\n`;
+  const fields = [
+    ['Client Name', s.clientName], ['Business Name', s.businessName], ['Phone', s.phone], ['Email', s.email],
+    ['Industry', s.industry], ['Stage', s.stage], ['Location', s.location], ['Online Presence', s.onlinePresence],
+    ['Competitors', s.competitors], ['Description', s.description],
+    ['---', '---'],
+    ['Age Group', s.ageGroup], ['Gender', s.gender], ['Income Level', s.incomeLevel],
+    ['Customer Location', s.customerLocation], ['Pain Points', s.painPoints],
+    ['---', '---'],
+    ['Platforms', s.platforms], ['Goals', s.goals], ['Campaign', s.campaign],
+    ['---', '---'],
+    ['Content Types', s.contentTypes], ['Brand Tone', s.brandTone], ['Language', s.language],
+    ['Frequency', s.frequency], ['Existing Assets', s.existingAssets], ['References', s.references],
+    ['---', '---'],
+    ['Budget', s.budget], ['Ads Budget', s.adsBudget], ['KPIs', s.kpis],
+    ['Start Date', s.startDate], ['Duration', s.duration], ['Notes', s.notes], ['Referral', s.referral],
+  ];
+  fields.forEach(([k, v]) => { if (v) text += k === '---' ? '\n' : `${k}: ${v}\n`; });
+  const blob = new Blob([text], {type:'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `Brief-${s.businessName || 'Client'}-${date.replace(/\//g,'-')}.txt`; a.click();
+}
+
+function exportAllCSV() {
+  const subs = getSubmissions();
+  if (!subs.length) { alert('No submissions to export.'); return; }
+  const keys = ['clientName','businessName','phone','email','industry','stage','location','onlinePresence',
+    'ageGroup','gender','incomeLevel','customerLocation','platforms','goals','contentTypes',
+    'brandTone','language','frequency','budget','adsBudget','kpis','startDate','duration','referral','submittedAt'];
+  const header = keys.join(',');
+  const rows = subs.map(s => keys.map(k => `"${(s[k]||'').replace(/"/g,'""')}"`).join(','));
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `All-Marketing-Briefs-${new Date().toLocaleDateString('en-IN').replace(/\//g,'-')}.csv`; a.click();
+}
+
+// ===== INIT =====
+updateBadge();
+</script>
+</body>
+</html>
