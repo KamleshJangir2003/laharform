@@ -413,7 +413,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
       </div>
       <div class="nav-buttons">
         <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
-        <button class="btn btn-success" onclick="submitForm()">✅ Submit & Save Brief</button>
+        <button class="btn btn-success" id="submitBtn" onclick="submitForm()">✅ Submit & Save Brief</button>
       </div>
     </div>
 
@@ -598,16 +598,30 @@ function submitForm() {
   saveSubmissions(submissions);
   updateBadge();
 
+  // Button loading state
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving...';
+
   // Google Sheet mein bhejo
   fetch('https://script.google.com/macros/s/AKfycbzn6SnxcBioMgf36yUBW16a1qEIy2wG04eK2b3rkkkhMwUqMxyYasAZOmRxJ2zkSbVA/exec', {
     method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'text/plain'},
     body: JSON.stringify(submission)
-  }).catch(err => console.log('Sheet error:', err));
-
-  // Show success
-  document.getElementById('section-' + currentStep).classList.remove('active');
-  document.getElementById('section-success').classList.add('active');
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  }).then(() => {
+    document.getElementById('section-' + currentStep).classList.remove('active');
+    document.getElementById('section-success').classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }).catch(() => {
+    // Sheet fail ho toh bhi locally save hai, success dikhao
+    document.getElementById('section-' + currentStep).classList.remove('active');
+    document.getElementById('section-success').classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }).finally(() => {
+    btn.disabled = false;
+    btn.textContent = '✅ Submit & Save Brief';
+  });
 }
 
 function resetForm() {
