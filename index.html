@@ -609,26 +609,21 @@ function submitForm() {
   const fullURL = sheetURL + '?data=' + encodeURIComponent(jsonStr);
   console.log('Sending to:', fullURL);
 
-  const xhr = new XMLHttpRequest();
-  xhr.open('GET', fullURL, true);
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4) {
-      console.log('XHR status:', xhr.status, xhr.responseText);
+  fetch(fullURL, {method:'GET', mode:'no-cors'})
+    .then(() => {
       document.getElementById('section-' + currentStep).classList.remove('active');
       document.getElementById('section-success').classList.add('active');
-      window.scrollTo({top: 0, behavior: 'smooth'});
+      window.scrollTo({top:0, behavior:'smooth'});
       btn.disabled = false;
       btn.textContent = '✅ Submit & Save Brief';
-    }
-  };
-  xhr.onerror = function() {
-    document.getElementById('section-' + currentStep).classList.remove('active');
-    document.getElementById('section-success').classList.add('active');
-    window.scrollTo({top: 0, behavior: 'smooth'});
-    btn.disabled = false;
-    btn.textContent = '✅ Submit & Save Brief';
-  };
-  xhr.send();
+    })
+    .catch(() => {
+      document.getElementById('section-' + currentStep).classList.remove('active');
+      document.getElementById('section-success').classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+      btn.disabled = false;
+      btn.textContent = '✅ Submit & Save Brief';
+    });
 }
 
 function resetForm() {
