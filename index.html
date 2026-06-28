@@ -604,24 +604,31 @@ function submitForm() {
   btn.textContent = '⏳ Saving...';
 
   // Google Sheet mein bhejo
-  const sheetURL = 'https://script.google.com/macros/s/AKfycbx1N51pmX8cis5Sq-rIe44Bix3YVmEGRXtJ3HI7dzp5frSqheaPBdn23sK8R6fVbPoPqw/exec';
-  const params = new URLSearchParams({data: JSON.stringify(submission)});
-  fetch(sheetURL + '?' + params.toString(), {
-    method: 'GET',
-    mode: 'no-cors'
-  }).then(() => {
+  const sheetURL = 'https://script.google.com/macros/s/AKfycbzhJuQCqd2vpS7OtPkB6cuH910imk9l9hiU6-yICekyZxKVgikuDQoSFUiFvveihuxbqA/exec';
+  const jsonStr = JSON.stringify(submission);
+  const fullURL = sheetURL + '?data=' + encodeURIComponent(jsonStr);
+  console.log('Sending to:', fullURL);
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', fullURL, true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      console.log('XHR status:', xhr.status, xhr.responseText);
+      document.getElementById('section-' + currentStep).classList.remove('active');
+      document.getElementById('section-success').classList.add('active');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      btn.disabled = false;
+      btn.textContent = '✅ Submit & Save Brief';
+    }
+  };
+  xhr.onerror = function() {
     document.getElementById('section-' + currentStep).classList.remove('active');
     document.getElementById('section-success').classList.add('active');
     window.scrollTo({top: 0, behavior: 'smooth'});
-  }).catch(() => {
-    // Sheet fail ho toh bhi locally save hai, success dikhao
-    document.getElementById('section-' + currentStep).classList.remove('active');
-    document.getElementById('section-success').classList.add('active');
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  }).finally(() => {
     btn.disabled = false;
     btn.textContent = '✅ Submit & Save Brief';
-  });
+  };
+  xhr.send();
 }
 
 function resetForm() {
