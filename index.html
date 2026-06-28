@@ -604,11 +604,10 @@ function submitForm() {
   btn.textContent = '⏳ Saving...';
 
   // Google Sheet mein bhejo
-  fetch('https://script.google.com/macros/s/AKfycbzn6SnxcBioMgf36yUBW16a1qEIy2wG04eK2b3rkkkhMwUqMxyYasAZOmRxJ2zkSbVA/exec', {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {'Content-Type': 'text/plain'},
-    body: JSON.stringify(submission)
+  const sheetURL = 'https://script.google.com/macros/s/AKfycbxRw40Z0FBLXE8974BJ-XzWgkZu28DOpTSD8tXGIMWGrzu3W3BTd9YBDCIHOGN2FUJhxQ/exec';
+  fetch(sheetURL + '?data=' + encodeURIComponent(JSON.stringify(submission)), {
+    method: 'GET',
+    mode: 'no-cors'
   }).then(() => {
     document.getElementById('section-' + currentStep).classList.remove('active');
     document.getElementById('section-success').classList.add('active');
