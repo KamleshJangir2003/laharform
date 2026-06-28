@@ -604,7 +604,7 @@ function submitForm() {
   btn.textContent = '⏳ Saving...';
 
   // Google Sheet mein bhejo
-  const sheetURL = 'https://script.google.com/macros/s/AKfycbzhJuQCqd2vpS7OtPkB6cuH910imk9l9hiU6-yICekyZxKVgikuDQoSFUiFvveihuxbqA/exec';
+  const sheetURL = 'https://script.google.com/macros/s/AKfycbwtz3hUpWFkUXbPllj1yKvq0BPoZYuJ0RMnvFHh1KydDxLUFd9pApJ0J768uGmSjNOqLg/exec';
   const jsonStr = JSON.stringify(submission);
   const fullURL = sheetURL + '?data=' + encodeURIComponent(jsonStr);
   console.log('Sending to:', fullURL);
