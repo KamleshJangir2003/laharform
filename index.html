@@ -412,13 +412,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
           <select id="f_duration"><option value="">Select...</option><option>1 Month (Trial)</option><option>3 Months</option><option>6 Months</option><option>12 Months</option><option>Ongoing</option></select>
         </div>
       </div>
-      <div class="field"><label>Special Notes / Requirements</label><textarea id="f_notes" placeholder="Koi khaas requirements, dos & don'ts, additional info..."></textarea></div>
+      <div class="field"><label>Special Notes / Requirements</label><textarea id="f_notes" placeholder="Additional details..."></textarea></div>
       <div class="field"><label>How did they find you?</label>
         <select id="f_referral"><option value="">Select...</option><option>Instagram</option><option>Facebook</option><option>WhatsApp</option><option>Referral</option><option>Google Search</option><option>LinkedIn</option><option>Walk-in</option><option>Other</option></select>
       </div>
       <div class="nav-buttons">
         <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
-        <button class="btn btn-success" id="submitBtn" onclick="submitForm()">✅ Submit & Save Brief</button>
+        <button class="btn btn-success" id="submitBtn" onclick="submitForm()"> Submit & Save Brief</button>
       </div>
     </div>
 
@@ -429,7 +429,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
         <h2>Brief Saved!</h2>
         <p>Client ka marketing brief successfully save ho gaya. Dashboard mein dekh sakte ho sab submissions.</p>
         <button class="btn btn-primary" onclick="showView('dashView', document.querySelectorAll('.nav-tab')[1])" style="margin-bottom:12px;width:100%">📊 View Dashboard →</button>
-        <button class="btn btn-ghost" style="width:100%" onclick="resetForm()">📋 Fill Another Form</button>
+        <button class="btn btn-ghost" style="width:100%" onclick="resetForm()"> Fill Another Form</button>
       </div>
     </div>
 
@@ -560,7 +560,7 @@ function g(id) {
 
 function submitForm() {
   const name = g('f_name');
-  if (!name) { alert('Business name zaroori hai!'); return; }
+  if (!name) { alert('Business name is required!'); return; }
 
   const submission = {
     id: Date.now().toString(),
